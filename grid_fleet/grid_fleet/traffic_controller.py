@@ -15,7 +15,7 @@ class TrafficControllerNode(Node):
         self.occupied_cells    = {}
         # vehicle_name -> (x,y)
         self.vehicle_positions = {}
-        # vehicle_name -> وقت أول ما اتبلوك
+        # vehicle_name
         self.wait_start        = {}
 
         self.create_subscription(
@@ -38,15 +38,15 @@ class TrafficControllerNode(Node):
         new_pos = (msg.x, msg.y)
         old_pos = self.vehicle_positions.get(name)
 
-        # اعمل free للسيل القديم
+
         if old_pos and self.occupied_cells.get(old_pos) == name:
             del self.occupied_cells[old_pos]
 
-        # احجز السيل الجديد
+
         self.vehicle_positions[name] = new_pos
         self.occupied_cells[new_pos] = name
 
-        # لو اتحرك مش waiting تاني
+
         if old_pos != new_pos:
             self.wait_start.pop(name, None)
 
@@ -54,7 +54,7 @@ class TrafficControllerNode(Node):
         target   = (request.target_x, request.target_y)
         occupant = self.occupied_cells.get(target)
 
-        # السيل فاضي — وافق
+
         if occupant is None or occupant == request.vehicle_name:
             self.wait_start.pop(request.vehicle_name, None)
             response.approved = True
@@ -63,7 +63,7 @@ class TrafficControllerNode(Node):
             )
             return response
 
-        # السيل محجوز — شيك على deadlock
+
         now = time.time()
         if request.vehicle_name not in self.wait_start:
             self.wait_start[request.vehicle_name] = now
