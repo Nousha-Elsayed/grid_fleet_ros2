@@ -6,8 +6,8 @@ from grid_fleet_interfaces.msg import VehiclePosition
 from turtlesim.srv import Spawn
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
-
-# scale من grid (0-7) لـ turtlesim (1-10)
+#mesh httslmmmmmm
+# scale من grid (0-7)  turtlesim (1-10)
 def grid_to_turtle(val):
     return 1.0 + (val / 7.0) * 9.0
 
@@ -21,9 +21,8 @@ class TurtlesimVisualizer(Node):
     def __init__(self):
         super().__init__('turtlesim_visualizer')
 
-        # مواقع السلاحف
+      
         self.turtle_poses = {}
-        # targets من الـ vehicles
         self.targets = {}
 
         # spawn turtle2 و turtle3
@@ -39,7 +38,7 @@ class TurtlesimVisualizer(Node):
             10
         )
 
-        # subscribe لـ pose كل سلحفاة
+
         self.create_subscription(
             Pose, '/turtle1/pose',
             lambda msg: self.save_pose('turtle1', msg), 10
@@ -53,21 +52,21 @@ class TurtlesimVisualizer(Node):
             lambda msg: self.save_pose('turtle3', msg), 10
         )
 
-        # publisher للسرعة لكل سلحفاة
+        # publisher للسرعة ة
         self.vel_pubs = {
             'turtle1': self.create_publisher(Twist, '/turtle1/cmd_vel', 10),
             'turtle2': self.create_publisher(Twist, '/turtle2/cmd_vel', 10),
             'turtle3': self.create_publisher(Twist, '/turtle3/cmd_vel', 10),
         }
 
-        # timer لتحريك السلاحف
+        # timer 
         self.create_timer(0.1, self.move_turtles)
 
         self.get_logger().info("Turtlesim Visualizer ready!")
         self.get_logger().info("turtle1=vehicle1  turtle2=vehicle2  turtle3=vehicle3")
 
     def spawn_turtles(self):
-        # turtle1 موجودة بالفعل — نعمل spawn لـ turtle2 و turtle3 بس
+
         for name, tx, ty in [('turtle2', 10.0, 1.0), ('turtle3', 1.0, 10.0)]:
             req       = Spawn.Request()
             req.x     = tx
@@ -106,7 +105,7 @@ class TurtlesimVisualizer(Node):
             twist = Twist()
 
             if dist > 0.1:
-                # زاوية ناحية الهدف
+               
                 angle_to_target = math.atan2(dy, dx)
                 angle_diff      = angle_to_target - ctheta
 
@@ -117,7 +116,7 @@ class TurtlesimVisualizer(Node):
                 twist.linear.x  = min(2.0, dist * 1.5)
                 twist.angular.z = angle_diff * 4.0
             else:
-                # وصلنا — وقف
+               
                 twist.linear.x  = 0.0
                 twist.angular.z = 0.0
 
